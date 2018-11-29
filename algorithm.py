@@ -1,7 +1,46 @@
 import numpy as np
 import cmath
 import math
+import cv2
 #ieee document 7813017 used
+
+def image():
+    img = cv2.imread('lena.png')
+    height, width = img.shape[:2]
+    img2 = np.empty(shape=(height,width))
+    normalizedImg = np.empty(shape=(height,width))
+    # print(img)
+    for x in range(0, width):
+        for y in range(0, height):
+            img2[x][y] = ideal(x, y, 14, 1.25, 10, 0.5, 100, img)[0]
+            
+    normalizedImg = cv2.normalize(img,  normalizedImg, 0, 255, cv2.NORM_MINMAX)
+    cv2.imshow('image', normalizedImg)
+    cv2.waitKey(0)
+def ideal(x, y, R, C, A, Sm, d, img):
+    weight = 2 #used to balance the two terms
+    K = PSF(x, y, R, C, A, Sm, d)
+    # top = np.multiply(weight * np.conj(np.fft.fft(K)), np.fft.fft(img))
+    f1 = np.array([1])
+    f2 = (np.array([1]))
+    # s1 = np.multiply(np.conj(np.fft.fft(f1)), np.fft.fft(f1))
+    # s2 = np.multiply(np.conj(np.fft.fft(f2)), np.fft.fft(f2))
+    # s3 = np.multiply(weight * np.conj(np.fft.fft(K)), np.fft.fft(K))
+    # print(s1)
+    # print(s2)
+    # print(s3)
+    # bottom = s1 + s2 + s3
+    bottom = np.multiply(np.conj(np.fft.fft(f1)), np.fft.fft(f1)) + np.multiply(np.conj(np.fft.fft(f2)), np.fft.fft(f2)) + np.multiply(weight * np.conj(np.fft.fft(K)), np.fft.fft(K))
+    
+    top = np.multiply(weight, np.conj(np.fft.fft(K)))
+    # bottom = s1 + s2 + s3
+      
+    
+    Ip = np.fft.ifft(np.divide(top, bottom))
+    print(Ip)
+    return Ip
+
+
 
 def wavefront_func(x, y, R, C, A, S):
     c0 = ((R ** 2) * C * np.sin(2*A))/(4 * np.sqrt(6))
@@ -37,6 +76,6 @@ def PSF(x, y, R, C, A, Sm, d):
 
     return psf_func
 
-print(PSF(1,2,3,4,5,6, 5))
-
+# print(PSF(1,2,3,4,5,6, 5))
+image()
 #look at deconvolution processes probably implement a few 
