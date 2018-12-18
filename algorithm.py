@@ -12,17 +12,16 @@ def image():
     # print(img)
     for x in range(0, width):
         for y in range(0, height):
-            img2[x][y] = ideal(x, y, 14, 1.25, 10, 0.5, 100, img)[0]
+            img2[x][y] = ideal(x, y, 14, 1.25, 10, 0.5, 100, img)[0]/1 * 255
             
-    normalizedImg = cv2.normalize(img,  normalizedImg, 0, 255, cv2.NORM_MINMAX)
-    cv2.imshow('image', normalizedImg)
+    cv2.imshow('image', img2)
     cv2.waitKey(0)
 def ideal(x, y, R, C, A, Sm, d, img):
     weight = 2 #used to balance the two terms
     K = PSF(x, y, R, C, A, Sm, d)
     # top = np.multiply(weight * np.conj(np.fft.fft(K)), np.fft.fft(img))
-    f1 = np.array([1])
-    f2 = (np.array([1]))
+    f1 = np.array([1, -1])
+    f2 = (np.array([-1, 1]))
     # s1 = np.multiply(np.conj(np.fft.fft(f1)), np.fft.fft(f1))
     # s2 = np.multiply(np.conj(np.fft.fft(f2)), np.fft.fft(f2))
     # s3 = np.multiply(weight * np.conj(np.fft.fft(K)), np.fft.fft(K))
@@ -37,7 +36,7 @@ def ideal(x, y, R, C, A, Sm, d, img):
       
     
     Ip = np.fft.ifft(np.divide(top, bottom))
-    print(Ip)
+    # print(Ip)
     return Ip
 
 

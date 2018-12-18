@@ -1,0 +1,7 @@
+what is lambda (the weight?)
+
+what are the first order derivative filters? the values in the pdf don't make sense
+
+
+use a guassian blur kernel instead of psf to make sure things work as expected
+can also make different values the colour red to see if there are changes in the image
